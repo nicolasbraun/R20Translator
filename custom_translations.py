@@ -5,8 +5,8 @@ import utils
 import hashlib
 import re
 
-# empirically google does not translation uppercased string that do not mean anything
-# We replace words we want to translate, for example Orcs, with R20TRANSLATOR_ORCS
+# Empirically google does not translate uppercased string that do not mean anything
+# We replace words we want to translate, for example Orcs, with R20TRANSLATOR_XXXXX
 # We then translate and replace back.
 
 
