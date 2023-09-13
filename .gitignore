@@ -1,0 +1,7 @@
+**.DS_Store
+**.zip
+build
+dist
+__pycache__
+*.spec
+custom_translations
