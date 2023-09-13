@@ -3,7 +3,12 @@ on:
   push:
     tags:
       - "*"
-
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number"
+        required: true
+        type: string
 env:
   PYTHON_VERSION: "3.11.5"
   SCRIPT_NAME: main_with_gui.py
@@ -138,5 +143,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           generateReleaseNotes: true
           allowUpdates: true
-          tag: ${{github.ref_name}}
+          tag: ${{inputs.version || github.ref_name}}
           replacesArtifacts: true
