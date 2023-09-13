@@ -12,9 +12,9 @@ on:
 env:
   PYTHON_VERSION: "3.11.5"
   SCRIPT_NAME: main_with_gui.py
-  WINDOWS_APP_NAME: R20Translator_windows_${{github.ref_name}}
-  LINUX_APP_NAME: R20Translator_linux_${{github.ref_name}}
-  MAC_X86_APP_NAME: R20Translator_macOS_x86_64_Intel_${{github.ref_name}}
+  WINDOWS_APP_NAME: R20Translator_windows_${{inputs.version || github.ref_name}}
+  LINUX_APP_NAME: R20Translator_linux_${{inputs.version || github.ref_name}}
+  MAC_X86_APP_NAME: R20Translator_macOS_x86_64_Intel_${{inputs.version || github.ref_name}}
 
 jobs:
   build_win:
