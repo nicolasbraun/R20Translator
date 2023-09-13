@@ -1,0 +1,142 @@
+name: Release
+on:
+  push:
+    tags:
+      - "*"
+
+env:
+  PYTHON_VERSION: "3.11.5"
+  SCRIPT_NAME: main_with_gui.py
+  WINDOWS_APP_NAME: R20Translator_windows_${{github.ref_name}}
+  LINUX_APP_NAME: R20Translator_linux_${{github.ref_name}}
+  MAC_X86_APP_NAME: R20Translator_macOS_x86_64_Intel_${{github.ref_name}}
+
+jobs:
+  build_win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{env.PYTHON_VERSION}}
+
+      # Install deps
+      - name: Install deps
+        run: |
+          pip install git+https://github.com/nicolasbraun/Gooey.git@feat/better_dark_mode#egg=gooey
+          pip install -r requirements.txt
+
+      - name: Build
+        run: pyinstaller --onefile -n ${{env.WINDOWS_APP_NAME}} ${{env.SCRIPT_NAME}}
+
+      - name: Archive Release
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: "zip"
+          path: "dist/${{env.WINDOWS_APP_NAME}}.exe"
+          filename: "dist/${{env.WINDOWS_APP_NAME}}.zip"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{env.WINDOWS_APP_NAME}}
+          path: dist/${{env.WINDOWS_APP_NAME}}.zip
+  build_linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{env.PYTHON_VERSION}}
+
+      - name: install required linux mods
+        run: |
+          sudo apt install python3-wxgtk4.0
+          sudo apt-get install build-essential libgtk-3-dev
+
+      # Install deps
+      - name: Install deps
+        run: |
+          pip install git+https://github.com/nicolasbraun/Gooey.git@feat/better_dark_mode#egg=gooey
+          pip install -r requirements.txt
+
+      # Build steps
+      - name: Build
+        run: pyinstaller --onefile -n ${{env.LINUX_APP_NAME}} ${{env.SCRIPT_NAME}}
+      - name: Archive Release
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: "zip"
+          path: "dist/${{env.LINUX_APP_NAME}}"
+          filename: "dist/${{env.LINUX_APP_NAME}}.zip"
+          # exclusions: "*.git* /*node_modules/* .editorconfig"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{env.LINUX_APP_NAME}}
+          path: dist/${{env.LINUX_APP_NAME}}.zip
+  build_mac_x86:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{env.PYTHON_VERSION}}
+
+      # Install deps
+      - name: Install deps
+        run: |
+          pip install git+https://github.com/nicolasbraun/Gooey.git@feat/better_dark_mode#egg=gooey
+          pip install -r requirements.txt
+
+      # Build steps
+      - name: Build
+        run: pyinstaller --onefile --windowed --target-arch x86_64 -n ${{env.MAC_X86_APP_NAME}} ${{env.SCRIPT_NAME}}
+
+      - name: Archive Release
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: "zip"
+          path: "dist/${{env.MAC_X86_APP_NAME}}.app"
+          filename: "dist/${{env.MAC_X86_APP_NAME}}.zip"
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{env.MAC_X86_APP_NAME}}
+          path: dist/${{env.MAC_X86_APP_NAME}}.zip
+
+  create_release:
+    runs-on: ubuntu-latest
+    needs: [build_win, build_mac_x86]
+    steps:
+      - name: Download Windows
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{env.WINDOWS_APP_NAME}}
+          path: artifacts
+      - name: Download Mac
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{env.MAC_X86_APP_NAME}}
+          path: artifacts
+      - name: Download Linux
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{env.LINUX_APP_NAME}}
+          path: artifacts
+
+      - name: Upload Release
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          artifacts: "artifacts/*.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generateReleaseNotes: true
+          allowUpdates: true
+          tag: ${{github.ref_name}}
+          replacesArtifacts: true
