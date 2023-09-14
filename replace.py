@@ -103,34 +103,34 @@ def replace_in_zip():
     temp_folder = f"{settings.working_dir}/temp_{settings.campaign_name}_{settings.target_language}"
     with zipfile.ZipFile(settings.zip_file_path, "r") as zip_ref:
         zip_ref.extractall(temp_folder)
-    # try:
-    process_folder(temp_folder)
+    try:
+        process_folder(temp_folder)
 
-    zip_output_path = settings.zip_file_path.replace(
-        ".zip", f"_{settings.target_language}.zip"
-    )
-    # Remove any previous run ZIP
-    if os.path.exists(zip_output_path):
-        os.remove(zip_output_path)
-    with zipfile.ZipFile(zip_output_path, "w") as zip_ref:
-        for foldername, _, filenames in os.walk(temp_folder):
-            for filename in filenames:
-                file_path = os.path.join(foldername, filename)
-                arcname = os.path.relpath(file_path, temp_folder)
-                zip_ref.write(file_path, arcname)
-    proper_nouns.save()
-    # except Exception as e:
-    #     print("❌ Something went wrong while translating campaign.")
-    #     print("❌ You can try again by relaunching the program")
-    #     print("❌ If the problem persists open an issue on Github")
-    #     print("❌ https://github.com/nicolasbraun/R20Translator/issues")
-    #     print("❌ Here is the error")
-    #     print(e)
-    # else:
-    #     print("✅Translated campaign has been saved to:", zip_output_path)
-    # finally:
-    #     try:
-    #         rmtree(temp_folder)
-    #     except Exception as e:
-    #         print("⚠️ Something when wrong whole cleaning temp data.")
-    #         print(f"⚠️ You can remove it by yoursellf at path:${temp_folder}")
+        zip_output_path = settings.zip_file_path.replace(
+            ".zip", f"_{settings.target_language}.zip"
+        )
+        # Remove any previous run ZIP
+        if os.path.exists(zip_output_path):
+            os.remove(zip_output_path)
+        with zipfile.ZipFile(zip_output_path, "w") as zip_ref:
+            for foldername, _, filenames in os.walk(temp_folder):
+                for filename in filenames:
+                    file_path = os.path.join(foldername, filename)
+                    arcname = os.path.relpath(file_path, temp_folder)
+                    zip_ref.write(file_path, arcname)
+        proper_nouns.save()
+    except Exception as e:
+        print("❌ Something went wrong while translating campaign.")
+        print("❌ You can try again by relaunching the program")
+        print("❌ If the problem persists open an issue on Github")
+        print("❌ https://github.com/nicolasbraun/R20Translator/issues")
+        print("❌ Here is the error")
+        print(e)
+    else:
+        print("✅Translated campaign has been saved to:", zip_output_path)
+    finally:
+        try:
+            rmtree(temp_folder)
+        except Exception as e:
+            print("⚠️ Something when wrong whole cleaning temp data.")
+            print(f"⚠️ You can remove it by yoursellf at path:${temp_folder}")
