@@ -12,25 +12,31 @@ import re
 
 def load_custom_translations():
     custom_translations_files = []
+    if settings.use_embedded_custom_translations:
+        print(f"Using embedded translations for lang {settings.target_language}")
+        embedded_translations_path = os.path.join(
+            os.path.dirname(__file__), f"translations_db/{settings.target_language}"
+        )
+        if os.path.exists(embedded_translations_path):
+            for f in os.listdir(embedded_translations_path):
+                file_path = os.path.join(embedded_translations_path, f)
+
+                if os.path.isfile(file_path) and f.endswith(".csv"):
+                    utils.printVerbose(f"Using: {file_path}")
+                    custom_translations_files.append(file_path)
+        else:
+            print(
+                f"There is no embedded translations folder for lang {settings.target_language}"
+            )
     if settings.custom_translations_folder:
+        print("Also using custom translations")
         for f in os.listdir(settings.custom_translations_folder):
             file_path = os.path.join(settings.custom_translations_folder, f)
 
             if os.path.isfile(file_path):
                 utils.printVerbose(f"Using: {file_path}")
                 custom_translations_files.append(file_path)
-    print(
-        f"Found {len(custom_translations_files)} custom translations files in {settings.custom_translations_folder}"
-    )
-    if settings.use_embedded_custom_translations:
-        print(f"Also using embedded translations for lang {settings.target_language}")
-        embedded_translations_path = f"translations_db/{settings.target_language}"
-        for f in os.listdir(embedded_translations_path):
-            file_path = os.path.join(embedded_translations_path, f)
 
-            if os.path.isfile(file_path) and f.endswith(".csv"):
-                utils.printVerbose(f"Using: {file_path}")
-                custom_translations_files.append(file_path)
     for f in custom_translations_files:
         parseCSV(f)
 

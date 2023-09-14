@@ -55,6 +55,7 @@ def parseArgs():
     )
     translations_group.add_argument(
         "--use_embedded",
+        default=True,
         help="If checked some premade translations (monsters, spells) will be used. You can check the code repository to know which ones",
         action="store_true",
     )

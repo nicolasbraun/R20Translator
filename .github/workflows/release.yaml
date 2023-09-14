@@ -35,7 +35,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build
-        run: pyinstaller --onefile -n ${{env.WINDOWS_APP_NAME}} ${{env.SCRIPT_NAME}}
+        run: pyinstaller --onefile --add-data 'translations_db:translations_db' -n ${{env.WINDOWS_APP_NAME}} ${{env.SCRIPT_NAME}}
 
       - name: Archive Release
         uses: thedoctor0/zip-release@0.7.1
@@ -71,7 +71,7 @@ jobs:
 
       # Build steps
       - name: Build
-        run: pyinstaller --onefile -n ${{env.LINUX_APP_NAME}} ${{env.SCRIPT_NAME}}
+        run: pyinstaller --onefile --add-data 'translations_db:translations_db' -n ${{env.LINUX_APP_NAME}} ${{env.SCRIPT_NAME}}
       - name: Archive Release
         uses: thedoctor0/zip-release@0.7.1
         with:
@@ -102,7 +102,7 @@ jobs:
 
       # Build steps
       - name: Build
-        run: pyinstaller --onefile --windowed --target-arch x86_64 -n ${{env.MAC_X86_APP_NAME}} ${{env.SCRIPT_NAME}}
+        run: pyinstaller --onefile --windowed --add-data 'translations_db:translations_db' --target-arch x86_64 -n ${{env.MAC_X86_APP_NAME}} ${{env.SCRIPT_NAME}}
 
       - name: Archive Release
         uses: thedoctor0/zip-release@0.7.1
