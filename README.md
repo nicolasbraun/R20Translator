@@ -107,6 +107,12 @@ source venv/bin/activate
 > python -m pip install 'git+https://github.com/nicolasbraun/Gooey.git@feat/better_dark_mode#egg=gooey'
 > python -m pip install -r requirements.txt
 # Then use the pyinstaller command
-> pyinstaller --onefile --windowed --target-arch x86_64 -n R20Translator_mac_x86_64 main_with_gui.py
+> pyinstaller --onefile --windowed --target-arch x86_64 --add-data 'translations_db:translations_db' -n R20Translator_mac_x86_64 main_with_gui.py
 
+```
+
+## Build ARM
+
+```bash
+pyinstaller --onefile --windowed --target-arch arm64 --add-data 'translations_db:translations_db' -n R20Translator_mac_arm64 main_with_gui.py
 ```
