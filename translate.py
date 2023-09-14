@@ -18,7 +18,8 @@ def load_translations_mapping():
 def translate_text(text):
     try:
         value = translator.translate(text)
-        return value
+        # Google tends to insert spaces into links
+        return remove_spaces_in_href(value)
     except Exception as e:
         if e.message not in settings.translations_errors:
             settings.translations_errors[e.message] = 1
@@ -26,6 +27,15 @@ def translate_text(text):
             settings.translations_errors[e.message] += 1
         print("Error while translating text:", e.message)
         return None
+
+
+def remove_spaces_in_href(input_string):
+    pattern = r"href=\"(.*?)\""
+    result = re.sub(
+        pattern, lambda x: 'href="' + x.group(1).replace(" ", "") + '"', input_string
+    )
+
+    return result
 
 
 def translate_value(value):
