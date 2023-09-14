@@ -6,12 +6,13 @@ This app or script is used to automatically Google Translate a ZIP export from [
 
 ## Basic usage
 
-- Launch the app
+- Launch the app. On macOS you might need to right clic > Open as the app is not signed.
 - Select you original ZIP file
 - Select the lang to translate to
 - Run
 
 The processing will take a while (can take several hours for big campaign) and a new ZIP will be created in the same folder as the source one.
+💡 Sometimes logs do not appear live during processing. Be patient they will appear at the end.
 
 ## Using custom translations
 
@@ -29,11 +30,12 @@ Neverwinter, Padhiver
 
 💡 When you run the app it will also output a file name `$campaign_proper_nous_$lang.csv` this is a tentative to export the propers nouns in the campaign. You can use this as a template and move it in your custom translations folder.
 
-On a second run it'll be much faster as the translations are stored.
+On a second run the processing willl be much faster as the translations are stored.
 
 ### Embedded translations
 
 The app embarks some generic DnD translation in [`translations_db/$lang`](./translations_db/). You can opt-in to also use those.
+Your custom translations always have priority.
 
 Feel free to make a PR to add some !
 
